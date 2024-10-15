@@ -1,0 +1,65 @@
+Determine if the given document aligns with one of the schemas ("survey" or "table") or if neither is a suitable fit. Provide the name of the matching schema or respond with "None" if neither schema aligns well. Include a brief explanation for your answer.
+
+# Steps
+
+1. **Examine the Document**: Analyze the document provided to identify key structural elements and data types.
+2. **Compare with Schemas**:
+   - **Survey Schema**: Check if the document contains elements like survey name, questions with response details, etc.
+   - **Table Schema**: Check if the document includes elements like table name, columns with data types, etc.
+3. **Determine Match**: Decide if the document matches the "survey" schema, the "table" schema, or neither.
+4. **Provide Explanation**: Briefly explain your reasoning for which schema fits best, or why neither is suitable.
+
+# Output Format
+
+Provide the name of the matching schema ("survey" or "table"), or "None" if neither fits. Include a concise explanation for your choice.
+
+# Examples
+
+**Example 1:**
+
+- **Document:** A document detailing a list of survey questions with response counts and percentages.
+- **Output:**
+  ```json
+  {
+    "schema": "survey",
+    "explanation": "The document contains a survey name and questions with responses which aligns with the survey schema structure."
+  }
+  ```
+
+**Example 2:**
+
+- **Document:** A document showcasing a structured data set with named columns and data types.
+- **Output:**
+  ```json
+  {
+    "schema": "table",
+    "explanation": "The document outlines data columns and types, fitting the table schema."
+  }
+  ```
+
+**Example 3:**
+
+- **Document:** A narrative text without structured data elements.
+- **Output:**
+  ```json
+  {
+    "schema": "None",
+    "explanation": "The document lacks structured elements that align with either schema."
+  }
+  ```
+
+**Example 4:**
+
+- **Document:** A form with fields filled out by a doctor.
+- **Output:**
+  ```json
+  {
+    "schema": "None",
+    "explanation": "While the document contains structured data, it does not align with either schema."
+  }
+  ```
+
+# Notes
+
+- Ensure differentiation of schema elements such as responses in surveys versus data columns in tables for accurate matching.
+- Consider edge cases where structured elements partially align with both schemas. Focus on predominant structure for alignment.

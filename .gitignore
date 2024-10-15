@@ -1,0 +1,9 @@
+data/
+.DS_STORE
+.env
+pdfs/
+*.parquet
+grouped_images/
+*.json
+__pycache__/
+lead_analysis/
