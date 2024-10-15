@@ -2,9 +2,10 @@ import json
 from pathlib import Path
 
 import streamlit as st
-from schemas import extract_data_with_schema, generate_schema, get_schema_class
 from streamlit_ace import st_ace
-from ui_helpers import get_images_cached, paginated_image_display
+
+from src.schemas import extract_data_with_schema, generate_schema, get_schema_class
+from src.ui_helpers import get_images_cached, paginated_image_display
 
 # Initialize session state variables
 # uploaded file
