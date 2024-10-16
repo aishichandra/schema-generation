@@ -4,7 +4,7 @@ from pathlib import Path
 import streamlit as st
 from streamlit_ace import st_ace
 
-from src.schemas import extract_data_with_schema, generate_schema, get_schema_class
+from src.schema_flow import extract_data_with_schema, generate_schema, get_schema_class
 from src.ui_helpers import get_images_cached, paginated_image_display
 
 # Initialize session state variables
@@ -82,7 +82,7 @@ if st.session_state.pages is not None:
             selected_pages = [
                 st.session_state.pages[i] for i in st.session_state.selected_pages
             ]
-            data = [extract_data_with_schema(i, schema_class) for i in selected_pages]
+            data = extract_data_with_schema(selected_pages, schema_class)
             st.session_state.extracted_data = data
             st.success("Data extracted successfully.")
         else:

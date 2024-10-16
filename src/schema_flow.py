@@ -6,8 +6,9 @@ from typing import Dict, Tuple, Type
 import PIL.Image
 from dotenv import load_dotenv
 from openai import OpenAI
-from pdf_processing import base64_encode_image, get_images
 from pydantic import BaseModel
+
+from src.pdf_processing import base64_encode_image, get_images
 
 load_dotenv()
 
@@ -52,7 +53,7 @@ def format_input_message(input: "str | PIL.Image.Image") -> Dict:
 
 
 def build_schema_prompt():
-    schema_paths = Path("./schema_generation/schemas").glob("*.py")
+    schema_paths = Path("./schemas").glob("*.py")
 
     schema_blocks = []
     # load in each file to a string
@@ -69,8 +70,8 @@ def build_schema_prompt():
 
 
 def get_schema_selection(pages):
-    schema_path = Path("./schema_generation/schemas")
-    with open("./schema_generation/prompts/schema_selection.txt", "r") as f:
+    schema_path = Path("./schemas")
+    with open("./prompts/schema_selection.txt", "r") as f:
         system_prompt = f.read()
 
     prompt = build_schema_prompt()
@@ -198,7 +199,6 @@ def get_schema_class(schema_str: str) -> Tuple[Type[BaseModel], str]:
 
 
 def update_table_schema(extracted_data):
-    # table_data = [{"column_name": i["column_name"], "column_data_type": i["column_data_type"]} for i in extracted_data["table_columns"]]
     table_data = extracted_data["table_columns"]
 
     prompt = f"""Translate the column names and data types from this data into a Pydantic model:
@@ -235,13 +235,28 @@ def update_table_schema(extracted_data):
 
 
 def persist_schema_definition(schema_str, schema_name):
-    schema_path = Path("./schema_generation/schemas") / f"{schema_name}.py"
+    schema_path = Path("./schemas") / f"{schema_name}.py"
     with open(schema_path, "w") as schema_file:
         schema_file.write(schema_str)
 
 
+def generate_schema(pages):
+    schema, history = get_schema_selection(pages)
+
+    if schema is None:
+        schema, history = generate_custom_schema(history)
+
+    schema_class, schema_name = get_schema_class(schema)
+
+    if schema_name == "Table":
+        test_data = extract_data_with_schema([pages[0]], schema_class)
+        schema = update_table_schema(test_data)
+
+    return schema
+
+
 if __name__ == "__main__":
-    test_path = "./schema_generation/data/campaign_finance.pdf"
+    test_path = "./data/campaign_finance.pdf"
     pages = get_images(test_path)
     test_pages = pages[1:3]
 

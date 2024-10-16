@@ -1,5 +1,6 @@
 import streamlit as st
-from pdf_processing import get_images
+
+from src.pdf_processing import get_images
 
 
 def display_image_with_checkbox(image, key, is_checked):
