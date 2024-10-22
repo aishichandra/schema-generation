@@ -1,4 +1,3 @@
-- Select test cases
 - Implement open source (Outlines)
 - Implement Pinpoint/Notebook
 - Implement OCR
