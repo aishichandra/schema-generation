@@ -4,13 +4,13 @@ from typing import List
 
 from pydantic import BaseModel
 
-from pdf_processing import get_images
-from schema_flow import extract_data_with_schema, generate_schema, get_schema_class
+from src.pdf_processing import get_images
+from src.schema_flow import extract_data_with_schema, generate_schema, get_schema_class
 
 images = get_images("./data/campaign_finance.pdf")
 
 cover_sheet = images[0]
-individual_contributions = images[1:38]
+individual_contributions = images[1:11]
 
 
 class ReportType(str, Enum):
@@ -86,28 +86,42 @@ class IndividualContributionTable(BaseModel):
 
 def flow(pages, prebaked_schema):
     generated_schema_str = generate_schema(pages)
-    generated_schema = get_schema_class(generated_schema_str)
+    print(generated_schema_str)
+    generated_schema, _ = get_schema_class(generated_schema_str)
     extracted_data_gen = extract_data_with_schema(pages, generated_schema)
     extracted_data = extract_data_with_schema(pages, prebaked_schema)
 
-    return extracted_data_gen, extracted_data
+    return extracted_data_gen, extracted_data, generated_schema_str
 
 
-# cover sheet and individual contributions
-gen_data_cover_sheet, data_cover_sheet = flow([cover_sheet], CoverSheet)
-gen_data_individual_contributions, data_individual_contributions = flow(
-    individual_contributions, IndividualContributionTable
-)
+# gen_data_cover_sheet, data_cover_sheet, schema_cover_sheet = flow(
+#     [cover_sheet], CoverSheet
+# )
+
+# with open("data/eval_outputs/cover_sheet.json", "w") as f:
+#     json.dump(data_cover_sheet, f, indent=2)
+
+# with open("data/eval_outputs/generated_cover_sheet.json", "w") as f:
+#     json.dump(gen_data_cover_sheet, f, indent=2)
 
 
-with open("cover_sheet.json", "w") as f:
-    json.dump(data_cover_sheet.dict(), f, indent=2)
+# with open("data/eval_outputs/generated_cover_sheet_schema.txt", "w") as f:
+#     f.write(schema_cover_sheet)
 
-with open("individual_contributions.json", "w") as f:
-    json.dump(data_individual_contributions.dict(), f, indent=2)
 
-with open("generated_cover_sheet.json", "w") as f:
-    json.dump(gen_data_cover_sheet.dict(), f, indent=2)
+(
+    gen_data_individual_contributions,
+    data_individual_contributions,
+    schema_individual_contributions,
+) = flow(individual_contributions, IndividualContributionTable)
 
-with open("generated_individual_contributions.json", "w") as f:
-    json.dump(gen_data_individual_contributions.dict(), f, indent=2)
+
+with open("data/eval_outputs/individual_contributions.json", "w") as f:
+    json.dump(data_individual_contributions, f, indent=2)
+
+with open("data/eval_outputs/generated_individual_contributions.json", "w") as f:
+    json.dump(gen_data_individual_contributions, f, indent=2)
+
+
+with open("data/eval_outputs/generated_individual_contributions_schema.txt", "w") as f:
+    f.write(schema_individual_contributions)

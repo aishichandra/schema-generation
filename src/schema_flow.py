@@ -121,7 +121,7 @@ def generate_custom_schema(history):
     messages = history + [{"role": "user", "content": prompt_schema}]
 
     resp = llm.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4o-2024-08-06",
         messages=messages,
     )
 
@@ -218,7 +218,7 @@ def update_table_schema(extracted_data):
         {"role": "user", "content": prompt},
     ]
 
-    resp = llm.chat.completions.create(model="gpt-4o-mini", messages=messages)
+    resp = llm.chat.completions.create(model="gpt-4o-2024-08-06", messages=messages)
 
     resp_str = resp.choices[0].message.content
 
@@ -226,7 +226,7 @@ def update_table_schema(extracted_data):
 
     messages.append({"role": "user", "content": prompt_pydantic})
 
-    resp = llm.chat.completions.create(model="gpt-4o-mini", messages=messages)
+    resp = llm.chat.completions.create(model="gpt-4o-2024-08-06", messages=messages)
 
     resp_str = resp.choices[0].message.content
     model_class = re.split(r"```.*", resp_str)[1].strip()
