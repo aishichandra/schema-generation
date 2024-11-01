@@ -1,4 +1,3 @@
-- Implement open source (Outlines)
 - Implement Pinpoint/Notebook
 - Implement OCR
 - Evaluation approach
