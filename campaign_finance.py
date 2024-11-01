@@ -94,19 +94,19 @@ def flow(pages, prebaked_schema):
     return extracted_data_gen, extracted_data, generated_schema_str
 
 
-# gen_data_cover_sheet, data_cover_sheet, schema_cover_sheet = flow(
-#     [cover_sheet], CoverSheet
-# )
+gen_data_cover_sheet, data_cover_sheet, schema_cover_sheet = flow(
+    [cover_sheet], CoverSheet
+)
 
-# with open("data/eval_outputs/cover_sheet.json", "w") as f:
-#     json.dump(data_cover_sheet, f, indent=2)
+with open("data/eval_outputs/cover_sheet.json", "w") as f:
+    json.dump(data_cover_sheet, f, indent=2)
 
-# with open("data/eval_outputs/generated_cover_sheet.json", "w") as f:
-#     json.dump(gen_data_cover_sheet, f, indent=2)
+with open("data/eval_outputs/generated_cover_sheet.json", "w") as f:
+    json.dump(gen_data_cover_sheet, f, indent=2)
 
 
-# with open("data/eval_outputs/generated_cover_sheet_schema.txt", "w") as f:
-#     f.write(schema_cover_sheet)
+with open("data/eval_outputs/generated_cover_sheet_schema.txt", "w") as f:
+    f.write(schema_cover_sheet)
 
 
 (
