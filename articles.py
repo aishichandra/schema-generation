@@ -2,12 +2,14 @@ import json
 from pathlib import Path
 from typing import Optional
 
+from bs4 import BeautifulSoup
 from pydantic import BaseModel
 from tqdm import tqdm
 
 from src.schema_flow import extract_data_with_schema, generate_schema, get_schema_class
 
 articles = list(Path("./data/article_html").glob("*.html"))
+articles = sorted(articles)
 
 
 class ParsingRules(BaseModel):
@@ -27,10 +29,6 @@ class Article(BaseModel):
     parsing_rules: ParsingRules
 
 
-with open(articles[0], "r") as f:
-    test = f.read()
-
-
 def flow(pages, prebaked_schema):
     generated_schema_str = generate_schema(pages)
     print(generated_schema_str)
@@ -45,7 +43,14 @@ for article_path in tqdm(articles):
     with open(article_path, "r") as f:
         html = f.read()
 
-    article_data_gen, article_data, article_data_schema = flow([html], Article)
+    soup = BeautifulSoup(html, "html.parser")
+    body = soup.find("body")
+    if body is None:
+        body_text = html[:110_000]
+    else:
+        body_text = body.get_text()
+
+    article_data_gen, article_data, article_data_schema = flow([body_text], Article)
 
     with open(f"data/eval_outputs/{article_path.stem}.json", "w") as f:
         json.dump(article_data, f, indent=2)
