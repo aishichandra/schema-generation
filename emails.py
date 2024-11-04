@@ -1,13 +1,16 @@
 import json
-from pathlib import Path
 from typing import List, Optional
 
+import duckdb
 from pydantic import BaseModel
 from tqdm import tqdm
 
 from src.schema_flow import extract_data_with_schema, generate_schema, get_schema_class
 
-emails = list(Path("./data/enron_email_sample").glob("*.txt"))
+con = duckdb.connect(database=":memory:")
+emails = con.execute(
+    "SELECT message FROM './data/enron_sample_small.parquet';"
+).fetchall()
 
 
 class ParsingRules(BaseModel):
@@ -38,17 +41,14 @@ def flow(pages, prebaked_schema):
     return extracted_data_gen, extracted_data, generated_schema_str
 
 
-for email_path in tqdm(emails):
-    with open(email_path, "r") as f:
-        html = f.read()
+for i, email in tqdm(enumerate(emails)):
+    email_data_gen, email_data, email_data_schema = flow([email], Email)
 
-    email_data_gen, email_data, email_data_schema = flow([html], Email)
-
-    with open(f"data/eval_outputs/{email_path.stem}.json", "w") as f:
+    with open(f"data/eval_outputs/email_{i}.json", "w") as f:
         json.dump(email_data, f, indent=2)
 
-    with open(f"data/eval_outputs/generated_{email_path.stem}.json", "w") as f:
+    with open(f"data/eval_outputs/generated_email_{i}.json", "w") as f:
         json.dump(email_data_gen, f, indent=2)
 
-    with open(f"data/eval_outputs/generated_{email_path.stem}_schema.txt", "w") as f:
+    with open(f"data/eval_outputs/generated_email_{i}_schema.txt", "w") as f:
         f.write(email_data_schema)
