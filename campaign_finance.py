@@ -15,7 +15,7 @@ individual_contributions = images[1:11]
 
 class ReportType(str, Enum):
     pre_primary = "pre_primary"
-    pre_elction = "pre_election"
+    pre_election = "pre_election"
     annual = "annual"
     nomination = "nomination"
     final = "final"
