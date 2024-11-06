@@ -90,12 +90,18 @@ def flow(pages, prebaked_schema):
     generated_schema, _ = get_schema_class(generated_schema_str)
     extracted_data_gen = extract_data_with_schema(pages, generated_schema)
     extracted_data = extract_data_with_schema(pages, prebaked_schema)
+    extracted_data_local = extract_data_with_schema(pages, prebaked_schema, local=True)
 
-    return extracted_data_gen, extracted_data, generated_schema_str
+    return (
+        extracted_data_gen,
+        extracted_data,
+        generated_schema_str,
+        extracted_data_local,
+    )
 
 
-gen_data_cover_sheet, data_cover_sheet, schema_cover_sheet = flow(
-    [cover_sheet], CoverSheet
+gen_data_cover_sheet, data_cover_sheet, schema_cover_sheet, local_data_cover_sheet = (
+    flow([cover_sheet], CoverSheet)
 )
 
 with open("data/eval_outputs/cover_sheet.json", "w") as f:
@@ -108,11 +114,15 @@ with open("data/eval_outputs/generated_cover_sheet.json", "w") as f:
 with open("data/eval_outputs/generated_cover_sheet_schema.txt", "w") as f:
     f.write(schema_cover_sheet)
 
+with open("data/eval_outputs/local_cover_sheet.json", "w") as f:
+    json.dump(local_data_cover_sheet, f, indent=2)
+
 
 (
     gen_data_individual_contributions,
     data_individual_contributions,
     schema_individual_contributions,
+    local_data_individual_contributions,
 ) = flow(individual_contributions, IndividualContributionTable)
 
 
@@ -125,3 +135,6 @@ with open("data/eval_outputs/generated_individual_contributions.json", "w") as f
 
 with open("data/eval_outputs/generated_individual_contributions_schema.txt", "w") as f:
     f.write(schema_individual_contributions)
+
+with open("data/eval_outputs/local_individual_contributions.json", "w") as f:
+    json.dump(local_data_individual_contributions, f, indent=2)

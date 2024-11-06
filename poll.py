@@ -15,6 +15,7 @@ class Response(BaseModel):
     response_n: int
     response_percentage: float
 
+
 class PollSurvey(BaseModel):
     question_number: int
     question_text: str
@@ -27,15 +28,17 @@ def flow(pages, prebaked_schema):
     generated_schema, _ = get_schema_class(generated_schema_str)
     extracted_data_gen = extract_data_with_schema(pages, generated_schema)
     extracted_data = extract_data_with_schema(pages, prebaked_schema)
+    extracted_data_local = extract_data_with_schema(pages, prebaked_schema, local=True)
 
-    return extracted_data_gen, extracted_data, generated_schema_str
+    return (
+        extracted_data_gen,
+        extracted_data,
+        generated_schema_str,
+        extracted_data_local,
+    )
 
 
-(
-    gen_data_poll,
-    data_poll,
-    schema_poll,
-) = flow(poll, PollSurvey)
+gen_data_poll, data_poll, schema_poll, local_data_poll = flow(poll, PollSurvey)
 
 
 with open("data/eval_outputs/poll.json", "w") as f:
@@ -46,3 +49,6 @@ with open("data/eval_outputs/generated_poll.json", "w") as f:
 
 with open("data/eval_outputs/generated_poll_schema.txt", "w") as f:
     f.write(schema_poll)
+
+with open("data/eval_outputs/local_poll.json", "w") as f:
+    json.dump(local_data_poll, f, indent=2)

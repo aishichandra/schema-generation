@@ -35,8 +35,14 @@ def flow(pages, prebaked_schema):
     generated_schema, _ = get_schema_class(generated_schema_str)
     extracted_data_gen = extract_data_with_schema(pages, generated_schema)
     extracted_data = extract_data_with_schema(pages, prebaked_schema)
+    extracted_data_local = extract_data_with_schema(pages, prebaked_schema, local=True)
 
-    return extracted_data_gen, extracted_data, generated_schema_str
+    return (
+        extracted_data_gen,
+        extracted_data,
+        generated_schema_str,
+        extracted_data_local,
+    )
 
 
 for article_path in tqdm(articles):
@@ -50,7 +56,9 @@ for article_path in tqdm(articles):
     else:
         body_text = body.get_text()
 
-    article_data_gen, article_data, article_data_schema = flow([body_text], Article)
+    article_data_gen, article_data, article_data_schema, article_data_local = flow(
+        [body_text], Article
+    )
 
     with open(f"data/eval_outputs/{article_path.stem}.json", "w") as f:
         json.dump(article_data, f, indent=2)
@@ -60,3 +68,6 @@ for article_path in tqdm(articles):
 
     with open(f"data/eval_outputs/generated_{article_path.stem}_schema.txt", "w") as f:
         f.write(article_data_schema)
+
+    with open(f"data/eval_outputs/local_{article_path.stem}.json", "w") as f:
+        json.dump(article_data_local, f, indent=2)

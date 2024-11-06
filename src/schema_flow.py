@@ -151,7 +151,7 @@ def generate_custom_schema(history):
     return schema_str, messages
 
 
-def extract_data_with_schema(pages, schema):
+def extract_data_with_schema(pages, schema, local=False):
     prompt_extract = (
         """Based on the provided schema, please extract data from the input."""
     )
@@ -162,9 +162,16 @@ def extract_data_with_schema(pages, schema):
         {"role": "user", "content": inputs_formatted},
     ]
 
-    resp = llm.beta.chat.completions.parse(
-        model="gpt-4o-mini", messages=messages, response_format=schema
-    )
+    if not local:
+        resp = llm.beta.chat.completions.parse(
+            model="gpt-4o-mini", messages=messages, response_format=schema
+        )
+
+    else:
+        client = OpenAI(base_url="http://127.0.0.1:1234/v1", api_key="lm-studio")
+        resp = client.beta.chat.completions.parse(
+            model="qwen2-v1-7b-instruct@4bit", messages=messages, response_format=schema
+        )
 
     return json.loads(resp.choices[0].message.content)
 
