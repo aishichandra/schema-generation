@@ -1,4 +1,2 @@
-- Implement Pinpoint/Notebook
-- Implement OCR
 - Evaluation approach
 - Deploy prototype
