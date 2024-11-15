@@ -7,23 +7,21 @@ from src.pdf_processing import get_images
 from src.schema_flow import extract_data_with_schema, generate_schema, get_schema_class
 
 images = get_images("./data/poll.pdf")
-poll = images[:3]
-
-
-class Response(BaseModel):
-    response_text: str
-    response_n: int
-    response_percentage: float
-
-
-class Question(BaseModel):
-    question_number: int
-    question_text: str
-    responses: List[Response]
+poll = images[4]
 
 class Poll(BaseModel):
-    questions: List[Question]
+    class Question(BaseModel):
+        question_number: int
+        question_text: str
 
+        class Response(BaseModel):
+            response_text: str
+            response_n: int
+            response_percentage: float
+
+        responses: List[Response]
+        
+    questions: List[Question]
 
 def flow(pages, prebaked_schema):
     # generated_schema_str = generate_schema(pages)
@@ -41,7 +39,7 @@ def flow(pages, prebaked_schema):
     )
 
 
-gen_data_poll, data_poll, schema_poll, local_data_poll = flow(poll, Poll)
+gen_data_poll, data_poll, schema_poll, local_data_poll = flow([poll], Poll)
 
 
 # with open("data/eval_outputs/poll.json", "w") as f:
