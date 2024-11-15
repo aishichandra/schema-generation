@@ -7,6 +7,22 @@ from streamlit_ace import st_ace
 from src.schema_flow import extract_data_with_schema, generate_schema, get_schema_class
 from src.ui_helpers import get_images_cached
 
+WELCOME_MESSAGE = """
+This app uses AI to help you extract structured data from documents. Here's how it works:
+
+1. **Upload a document** - Supports PDF, DOCX, or TXT files (max 10 pages)
+2. **Select pages** - Choose which pages you want to process
+3. **Define your schema** - You have two options:
+   - Edit the default schema directly in the code editor
+   - Click 'Generate Schema' to automatically create one based on your selected pages
+4. **Extract data** - The app will process your document according to the schema
+5. **Download results** - Get your structured data as a JSON file
+
+The schema defines what data to extract and how to structure it. It uses Python's Pydantic library for data validation.
+
+📚 Want to learn more? Check out the [detailed blog post](https://your-blog-post-url.com) about the technology behind this app.
+"""
+
 PLACEHOLDER_SCHEMA = '''from pydantic import BaseModel
 from typing import List, Optional
 
@@ -32,6 +48,12 @@ if "extracted_data" not in st.session_state:
 # selected pages indices
 if "selected_pages" not in st.session_state:
     st.session_state.selected_pages = []
+
+# Welcome message first, then title
+st.markdown("# 🤖 Welcome!")
+st.info(WELCOME_MESSAGE, icon="🎯")
+
+st.divider()
 
 # Title
 st.title("Schema-based data extraction from documents")
