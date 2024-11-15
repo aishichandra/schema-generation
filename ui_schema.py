@@ -10,7 +10,7 @@ from src.ui_helpers import get_images_cached
 WELCOME_MESSAGE = """
 This app uses AI to help you extract structured data from documents. Here's how it works:
 
-1. **Upload a document** - Supports PDF, DOCX, or TXT files (max 10 pages)
+1. **Upload a document** - Supports PDF files (max 10 pages)
 2. **Select pages** - Choose which pages you want to process
 3. **Define your schema** - You have two options:
    - Edit the default schema directly in the code editor
@@ -59,7 +59,7 @@ st.divider()
 st.title("Schema-based data extraction from documents")
 
 # File uploader
-uploaded_file = st.file_uploader("Upload a file", type=["pdf", "docx", "txt"])
+uploaded_file = st.file_uploader("Upload a file", type=["pdf"])
 
 if uploaded_file is not None and st.session_state.uploaded_file != uploaded_file:
     st.session_state.uploaded_file = uploaded_file
