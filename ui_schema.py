@@ -5,7 +5,7 @@ import streamlit as st
 from streamlit_ace import st_ace
 
 from src.schema_flow import extract_data_with_schema, generate_schema, get_schema_class
-from src.ui_helpers import get_images_cached, paginated_image_display
+from src.ui_helpers import get_images_cached
 
 # Initialize session state variables
 # uploaded file
@@ -56,27 +56,38 @@ if st.session_state.pages is not None:
     
     with col2:
         st.write(f"Total pages: {len(st.session_state.pages)}")
-        select_all = st.checkbox("Select all pages", key="select_all")
+        if st.checkbox("Select all pages", key="select_all"):
+            st.session_state.selected_pages = list(range(len(st.session_state.pages)))
+        else:
+            # Only clear if it was previously all selected
+            if len(st.session_state.selected_pages) == len(st.session_state.pages):
+                st.session_state.selected_pages = []
         
     with col1:
-        if select_all:
-            st.session_state.selected_pages = list(range(len(st.session_state.pages)))
-        
         # Create a grid layout for page selection
         cols = st.columns(4)
         for idx, page in enumerate(st.session_state.pages):
             with cols[idx % 4]:
                 st.image(page, caption=f"Page {idx + 1}", use_column_width=True)
-                selected = st.checkbox(
+                if st.checkbox(
                     f"Include page {idx + 1}",
-                    value=select_all or idx in st.session_state.selected_pages,
-                    key=f"page_{idx}"
-                )
-                if selected and idx not in st.session_state.selected_pages:
-                    st.session_state.selected_pages.append(idx)
-                elif not selected and idx in st.session_state.selected_pages:
-                    st.session_state.selected_pages.remove(idx)
+                    value=idx in st.session_state.selected_pages,
+                    key=f"page_{idx}",
+                    on_change=lambda i=idx: toggle_page(i)
+                ):
+                    if idx not in st.session_state.selected_pages:
+                        st.session_state.selected_pages.append(idx)
+                else:
+                    if idx in st.session_state.selected_pages:
+                        st.session_state.selected_pages.remove(idx)
     
+    # Add this helper function at the top of the file after the session state initialization
+    def toggle_page(idx):
+        if idx in st.session_state.selected_pages:
+            st.session_state.selected_pages.remove(idx)
+        else:
+            st.session_state.selected_pages.append(idx)
+
     n_selected = len(st.session_state.selected_pages)
     st.write(f"Selected pages: {n_selected}")
 
