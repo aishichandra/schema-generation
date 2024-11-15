@@ -7,6 +7,15 @@ from streamlit_ace import st_ace
 from src.schema_flow import extract_data_with_schema, generate_schema, get_schema_class
 from src.ui_helpers import get_images_cached
 
+PLACEHOLDER_SCHEMA = '''from pydantic import BaseModel
+from typing import List, Optional
+
+class Document(BaseModel):
+    """Edit this schema or use 'Generate Schema' to create one automatically."""
+    title: Optional[str] = None
+    content: Optional[List[str]] = None
+'''
+
 # Initialize session state variables
 # uploaded file
 if "uploaded_file" not in st.session_state:
@@ -16,7 +25,7 @@ if "pages" not in st.session_state:
     st.session_state.pages = None
 # generated/edited data schema
 if "schema" not in st.session_state:
-    st.session_state.schema = None
+    st.session_state.schema = PLACEHOLDER_SCHEMA
 # extracted (JSON) data
 if "extracted_data" not in st.session_state:
     st.session_state.extracted_data = None
@@ -91,31 +100,35 @@ if st.session_state.pages is not None:
     n_selected = len(st.session_state.selected_pages)
     st.write(f"Selected pages: {n_selected}")
 
-    # Generate schema for selected pages
-    if n_selected > 0 and st.button(
-        "Generate Schema",
-        key="generate_schema_button",
-    ):
-        selected_pages = [
-            st.session_state.pages[i] for i in st.session_state.selected_pages
-        ]
-        schema = generate_schema(selected_pages)
-        st.session_state.schema = schema
-
-    # Show the schema in an editor
-    if st.session_state.schema is not None:
+    # Show schema section
+    st.write("## Schema Definition")
+    st.write("You can either edit the schema directly or generate one from selected pages.")
+    
+    col1, col2 = st.columns([4, 1])
+    with col2:
+        if n_selected > 0:
+            if st.button(
+                "Generate Schema",
+                key="generate_schema_button",
+            ):
+                selected_pages = [
+                    st.session_state.pages[i] for i in st.session_state.selected_pages
+                ]
+                schema = generate_schema(selected_pages)
+                st.session_state.schema = schema
+    
+    with col1:
         edited_schema = st_ace(
             value=st.session_state.schema,
             language="python",
             key="schema_editor",
-            height=500,
+            height=300,
             theme="monokai",
         )
-        # Update the schema in session state
         st.session_state.schema = edited_schema
 
-    # Allow the user to apply the schema to extract data
-    if st.button("Extract Data", key="extract_data_button"):
+    # Extract data button
+    if st.button("Extract Data", key="extract_data_button", disabled=n_selected == 0):
         schema_code = st.session_state.schema
         if schema_code is not None:
             schema_class, _ = get_schema_class(schema_code)
