@@ -130,7 +130,7 @@ def generate_custom_schema(history):
     messages.append({"role": "user", "content": prompt_generate})
 
     resp = llm.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4o-2024-08-06",
         messages=messages,
     )
 
@@ -139,7 +139,7 @@ def generate_custom_schema(history):
     messages.append({"role": "user", "content": prompt_pydantic})
 
     resp = llm.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4o-2024-08-06",
         messages=messages,
     )
     resp_str = resp.choices[0].message.content
