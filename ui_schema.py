@@ -49,6 +49,12 @@ if "extracted_data" not in st.session_state:
 if "selected_pages" not in st.session_state:
     st.session_state.selected_pages = []
 
+def toggle_page(idx):
+    if idx in st.session_state.selected_pages:
+        st.session_state.selected_pages.remove(idx)
+    else:
+        st.session_state.selected_pages.append(idx)
+
 # Welcome message first, then title
 st.markdown("# 🤖 Welcome!")
 st.info(WELCOME_MESSAGE, icon="🎯")
@@ -111,13 +117,6 @@ if st.session_state.pages is not None:
                 else:
                     if idx in st.session_state.selected_pages:
                         st.session_state.selected_pages.remove(idx)
-    
-    # Add this helper function at the top of the file after the session state initialization
-    def toggle_page(idx):
-        if idx in st.session_state.selected_pages:
-            st.session_state.selected_pages.remove(idx)
-        else:
-            st.session_state.selected_pages.append(idx)
 
     n_selected = len(st.session_state.selected_pages)
     st.write(f"Selected pages: {n_selected}")
