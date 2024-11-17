@@ -1,2 +1,0 @@
-- Evaluation approach
-- Deploy prototype
