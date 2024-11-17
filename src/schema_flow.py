@@ -7,12 +7,13 @@ import PIL.Image
 from dotenv import load_dotenv
 from openai import OpenAI
 from pydantic import BaseModel
+from streamlit import secrets
 
 from src.pdf_processing import base64_encode_image, get_images
 
 load_dotenv()
 
-llm = OpenAI()
+llm = OpenAI(api_key=secrets["OPENAI_API_KEY"])
 
 
 class SchemaSelection(BaseModel):

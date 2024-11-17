@@ -7,3 +7,4 @@ grouped_images/
 *.json
 __pycache__/
 lead_analysis/
+.streamlit/
