@@ -1,0 +1,60 @@
+Identify and list all fields present in the given document comprehensively, ensuring no information is omitted, and generate a Pydantic model class that represents the document.
+
+The document may contain complex elements including:
+  - Questions with multiple checkboxes
+  - Fields with multiple columns
+  - Columns with multiple values
+
+# Steps
+1. Carefully review the entire document.
+2. Identify each distinct field or data section.
+3. Ensure to note all instances of:
+   - Questions that include multiple checkboxes
+   - Fields that consist of multiple columns
+   - Columns that contain multiple values
+4. Be comprehensive. Do not miss any part of the document that represents an independent piece of data.
+5. Based on the fields you identified, create a Pydantic model that accurately represents the document structure, including groupings and complex types.
+
+# Output Format
+
+The output should be provided in two parts:
+1. A numbered list, with a clear description of each identified field, ensuring you are as specific as possible about the type and grouping of each field.
+2. A Python class using Pydantic to represent the document.
+
+The Pydantic model class should:
+- Accurately reflect the structure, data types, and complexity identified in the prior step.
+- Use appropriate Pydantic Field types to represent text, numerical data, choices, lists, or nested structures.
+- Account for any repeated data (e.g., multiple rows, repeated fields) with Lists defined in the class.
+
+# Examples
+
+### Step 1: List of Fields
+1. Name: Text field for entering full name.
+2. Address: Contains multiple columns for Street, City, State, Zip.
+3. Preferences: Multiple checkboxes for different options (e.g., Newsletters, Promotions, Updates).
+4. Survey Responses: A matrix with multiple columns and values across different questions. 
+
+### Step 2: Pydantic Model Class
+```python
+from pydantic import BaseModel
+from typing import List, Optional
+
+class DocumentModel(BaseModel):
+    name: str
+    address: dict
+    preferences: List[str]
+    survey_responses: List[dict]
+
+class Address(BaseModel):
+    street: str
+    city: str
+    state: str
+    zip: str
+```
+
+Notes: (In an actual output, you would need appropriate detail in fields like `Address` and `SurveyResponses` to reflect the confirmed structure of the document.)
+
+# Notes
+- Carefully differentiate between single text fields, groups of checkboxes, and any structured groups like tables or grids.
+- Fields representing related information should be organized together appropriately in the Pydantic model.
+- Handle sub-questions or grouped elements that might be easy to overlook and represent them accurately in the model.

@@ -1,0 +1,29 @@
+Identify and list all fields present in the given document comprehensively, ensuring no information is omitted.
+
+The document may contain complex elements including:
+  - Questions with multiple checkboxes
+  - Fields with multiple columns
+  - Columns with multiple values
+
+# Steps
+1. Carefully review the entire document.
+2. Identify each distinct field or data section.
+3. Ensure to note all instances of:
+   - Questions that include multiple checkboxes
+   - Fields that consist of multiple columns
+   - Columns that contain multiple values
+4. Be comprehensive. Do not miss any part of the document that represents an independent piece of data.
+
+# Output Format
+The output should be formatted as a numbered list, with a clear description of each field. Be as specific as possible about the type and grouping of each field.
+
+Example output:
+1. Name: Text field for entering full name.
+2. Address: Contains multiple columns for Street, City, State, Zip.
+3. Preferences: Multiple checkboxes for different options (e.g., Newsletters, Promotions, Updates).
+4. Survey Responses: A matrix with multiple columns and values across different questions. 
+
+# Notes
+- Carefully differentiate between single text fields, groups of checkboxes, and any structured groups like tables or grids.
+- Fields representing similar or related information should be noted as grouped if applicable.
+- Be particularly vigilant for sub-questions or grouped elements that might be easy to overlook.

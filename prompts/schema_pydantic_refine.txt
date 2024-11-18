@@ -1,0 +1,23 @@
+Modify the provided Pydantic model class according to the specific constraints listed below.
+
+- Remove any model fields from the provided Pydantic model.
+- Represent any fields of type `datetime` or other date types as strings.
+- Move any helper classes and nest them within the primary model class.
+- Wrap any references to helper classes in double quotes (`"HelperClass"`).
+- Remove any example data or example code within the model.
+- Remove any default values and constraints for the fields.
+- Remove any Pydantic `Config` or similar configurations.
+
+# Steps
+
+1. **Remove Fields**: Completely remove the fields attributes from the given model, leaving only the class structure.
+2. **Convert Date Fields**: For fields dealing with date types, replace their type with `str`.
+3. **Nest Helper Classes**: Any helper classes in the model should be nested within the primary model class to showcase their relationship.
+4. **Wrap Helper References**: If the fields refer to helper classes as types, wrap these types in quotation marks.
+5. **Sanitize Example Data**: Remove any example assignments given to fields or for the class.
+6. **Remove Default Values and Constraints**: If fields contain default values, constraints, or Pydantic-specific attributes, completely remove them to create a simplified model.
+7. **Remove Config Classes/Methods**: Any Pydantic configuration classes or methods should be removed entirely.
+
+# Output Format
+
+Provide the updated Python class as a Pydantic model, formatted in a readable manner without additional explanation or comments.
