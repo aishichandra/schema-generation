@@ -125,19 +125,18 @@ def generate_custom_schema(history):
     messages.append({"role": "user", "content": prompt_generate})
 
     resp = llm.chat.completions.create(
-        model="gpt-4o-2024-08-06",
+        model="gpt-4o-mini",
         messages=messages,
     )
 
     messages.append({"role": "assistant", "content": resp.choices[0].message.content})
 
-    print(messages)
-
     messages.append({"role": "user", "content": prompt_refine})
 
     resp = llm.chat.completions.create(
-        model="gpt-4o-2024-08-06",
+        model="gpt-4o-mini",
         messages=messages,
+        temperature=0.3
     )
     resp_str = resp.choices[0].message.content
 
