@@ -104,20 +104,14 @@ def get_schema_selection(pages):
 
 
 def generate_custom_schema(history):
-    prompt_schema = """Here is a document containing important data. Please list the fields in this document. Be comprehensive. The document may be complex, so make sure you're not omitting any information, such as:
-    - questions with multiple checkboxes
-    - fields with multiple columns
-    - columns with multiple values
-    """
-    prompt_generate = "Based on the fields you identified, please generate a Pydantic model class that can represent this entire document."
-    prompt_pydantic = """Update your Pydantic model with the following constraints:
-    - Remove any Fields
-    - Represent any dates as strings
-    - Nest any helper classes inside your main class
-    - Wrap any references to helper classes in double quotes (e.g. "HelperClass")
-    - Remove any example data, or example implementations
-    - Remove any default values and constraints
-    - Remove any configs"""
+    with open("./prompts/schema_data_identification.txt", "r") as f:
+        prompt_schema = f.read()
+
+    with open("./prompts/schema_pydantic_generation.txt", "r") as f:
+        prompt_generate = f.read()
+
+    with open("./prompts/schema_pydantic_refine.txt", "r") as f:
+        prompt_refine = f.read()
 
     messages = history + [{"role": "user", "content": prompt_schema}]
 
@@ -131,17 +125,18 @@ def generate_custom_schema(history):
     messages.append({"role": "user", "content": prompt_generate})
 
     resp = llm.chat.completions.create(
-        model="gpt-4o-2024-08-06",
+        model="gpt-4o-mini",
         messages=messages,
     )
 
     messages.append({"role": "assistant", "content": resp.choices[0].message.content})
 
-    messages.append({"role": "user", "content": prompt_pydantic})
+    messages.append({"role": "user", "content": prompt_refine})
 
     resp = llm.chat.completions.create(
-        model="gpt-4o-2024-08-06",
+        model="gpt-4o-mini",
         messages=messages,
+        temperature=0.3
     )
     resp_str = resp.choices[0].message.content
 

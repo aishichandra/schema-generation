@@ -1,0 +1,32 @@
+Generate a comprehensive Pydantic model class representing the document structure, following these steps:
+
+# Field Analysis
+1. Review the document and identify:
+   - Data types (text, number, date, boolean)
+   - Required/optional status
+   - Validation rules and constraints
+   - Default values
+   - Parent-child relationships
+   - Conditional logic
+   - Hierarchical groupings
+   - Multi-value fields and their limits
+   - Dynamic/repeatable sections
+   - Formatted fields with specific requirements
+   - Calculated or derived fields
+
+# Pydantic Model Generation
+1. Create appropriate class hierarchies
+2. Define field types using:
+   - Basic types (str, int, float, bool)
+   - Complex types (List, Dict, Optional)
+   - Nested models for structured data
+3. Add field constraints:
+   - Required/optional status using Optional[]
+
+# Output Format
+## Pydantic Model
+```python
+from pydantic import BaseModel
+from typing import List, Optional, Dict, Union
+
+# Models go here

@@ -1,0 +1,32 @@
+Modify the provided Pydantic model according to these constraints:
+
+# Required Changes
+1. Field Modifications:
+   - Remove all Field() attributes
+   - Convert datetime/date types to str
+   - Remove default values and validators
+   - Remove example data
+
+2. Class Structure:
+   - Nest all helper classes within main class
+   - Wrap helper class references in quotes
+   - Remove Config classes and methods
+   - Remove @validator decorators
+   - Remove custom methods
+
+3. Type Handling:
+   - Union[] becomes str
+   - Enum classes become str
+   - JSON/Dict fields become str
+   - Any becomes str
+
+4. Import Cleanup:
+   - Remove unused imports
+
+# Validation Checks
+- No Field() attributes remain
+- No default values present
+- All helper classes are nested
+- All helper references are quoted
+- No Config classes or methods exist
+- Only essential imports remain
