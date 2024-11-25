@@ -9,7 +9,7 @@ from openai import OpenAI
 from pydantic import BaseModel
 from streamlit import secrets
 
-from src.pdf_processing import base64_encode_image, get_images
+from src.pdf_processing import base64_encode_image
 
 load_dotenv()
 
@@ -134,9 +134,7 @@ def generate_custom_schema(history):
     messages.append({"role": "user", "content": prompt_refine})
 
     resp = llm.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=messages,
-        temperature=0.3
+        model="gpt-4o-mini", messages=messages, temperature=0.3
     )
     resp_str = resp.choices[0].message.content
 
@@ -256,26 +254,3 @@ def generate_schema(pages):
         schema = update_table_schema(test_data)
 
     return schema
-
-
-if __name__ == "__main__":
-    test_path = "./data/campaign_finance.pdf"
-    pages = get_images(test_path)
-    test_pages = pages[1:3]
-
-    schema, history = get_schema_selection(test_pages)
-
-    print(schema)
-
-    if schema is None:
-        schema, history = generate_custom_schema(history)
-
-        print(schema)
-
-    schema_class, schema_name = get_schema_class(schema)
-
-    if schema_name == "Table":
-        test_data = extract_data_with_schema([test_pages[0]], schema_class)
-        schema = update_table_schema(test_data)
-        print(schema)
-        schema_class, schema_name = get_schema_class(schema)

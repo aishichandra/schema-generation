@@ -1,6 +1,5 @@
 import streamlit as st
 
-from src.pdf_processing import get_images
 
 
 def display_image_with_checkbox(image, key, is_checked):
@@ -45,6 +44,3 @@ def paginated_image_display(images, page_size=5):
     return list(st.session_state.selected_pages)
 
 
-@st.cache_data
-def get_images_cached(pdf_path):
-    return get_images(pdf_path)
