@@ -6,7 +6,11 @@ from bs4 import BeautifulSoup
 from pydantic import BaseModel
 from tqdm import tqdm
 
-from src.schema_flow import extract_data_with_schema, generate_schema, get_schema_class
+from components.schema_flow import (
+    extract_data_with_schema,
+    generate_schema,
+    get_schema_class,
+)
 
 articles = list(Path("./data/article_html").glob("*.html"))
 articles = sorted(articles)

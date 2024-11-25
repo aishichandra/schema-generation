@@ -3,11 +3,16 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.pdf_processing import get_images
-from src.schema_flow import extract_data_with_schema, generate_schema, get_schema_class
+from components.files import get_images
+from components.schema_flow import (
+    extract_data_with_schema,
+    generate_schema,
+    get_schema_class,
+)
 
 images = get_images("./data/poll.pdf")
 poll = images[4]
+
 
 class Poll(BaseModel):
     class Question(BaseModel):
@@ -20,15 +25,16 @@ class Poll(BaseModel):
             response_percentage: float
 
         responses: List[Response]
-        
+
     questions: List[Question]
 
+
 def flow(pages, prebaked_schema):
-    # generated_schema_str = generate_schema(pages)
-    # print(generated_schema_str)
-    # generated_schema, _ = get_schema_class(generated_schema_str)
-    # extracted_data_gen = extract_data_with_schema(pages, generated_schema)
-    # extracted_data = extract_data_with_schema(pages, prebaked_schema)
+    generated_schema_str = generate_schema(pages)
+    print(generated_schema_str)
+    generated_schema, _ = get_schema_class(generated_schema_str)
+    extracted_data_gen = extract_data_with_schema(pages, generated_schema)
+    extracted_data = extract_data_with_schema(pages, prebaked_schema)
     extracted_data_local = extract_data_with_schema(pages, prebaked_schema, local=True)
 
     return (

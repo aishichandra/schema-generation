@@ -4,8 +4,12 @@ import streamlit as st
 from streamlit_ace import st_ace
 
 from components.files import file_uploader, page_selector
+from components.schema_flow import (
+    extract_data_with_schema,
+    generate_schema,
+    get_schema_class,
+)
 from components.state import initialize_state
-from src.schema_flow import extract_data_with_schema, generate_schema, get_schema_class
 
 WELCOME_MESSAGE = """
 This app uses AI to help you extract structured data from documents. Here's how it works:

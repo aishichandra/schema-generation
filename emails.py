@@ -5,7 +5,7 @@ import duckdb
 from pydantic import BaseModel
 from tqdm import tqdm
 
-from src.schema_flow import extract_data_with_schema
+from components.schema_flow import extract_data_with_schema
 
 con = duckdb.connect(database=":memory:")
 emails = con.execute(
