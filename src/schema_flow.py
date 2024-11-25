@@ -1,5 +1,7 @@
+import base64
 import json
 import re
+from io import BytesIO
 from pathlib import Path
 from typing import Dict, Tuple, Type
 
@@ -9,8 +11,6 @@ from openai import OpenAI
 from pydantic import BaseModel
 from streamlit import secrets
 
-from src.pdf_processing import base64_encode_image
-
 load_dotenv()
 
 llm = OpenAI(api_key=secrets["OPENAI_API_KEY"])
@@ -19,6 +19,21 @@ llm = OpenAI(api_key=secrets["OPENAI_API_KEY"])
 class SchemaSelection(BaseModel):
     explanation: str
     chosen_schema: str
+
+
+def base64_encode_image(image: "PIL.Image.Image") -> str:
+    """
+    Encode a PIL Image object to a base64 string.
+
+    Args:
+        image (PIL.Image.Image): The image to encode.
+
+    Returns:
+        str: The base64 encoded string representation of the image.
+    """
+    buffered = BytesIO()
+    image.save(buffered, format="PNG")
+    return base64.b64encode(buffered.getvalue()).decode("utf-8")
 
 
 def format_input_message(input: "str | PIL.Image.Image") -> Dict:

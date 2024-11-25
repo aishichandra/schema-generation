@@ -3,7 +3,7 @@ import json
 import streamlit as st
 from streamlit_ace import st_ace
 
-from components.files import file_uploader
+from components.files import file_uploader, page_selector
 from components.state import initialize_state
 from src.schema_flow import extract_data_with_schema, generate_schema, get_schema_class
 
@@ -39,38 +39,7 @@ st.title("Schema-based data extraction from documents")
 file_uploader()
 
 if st.session_state.pages is not None:
-    st.write("## Page Selection")
-    col1, col2 = st.columns([3, 1])
-
-    with col2:
-        st.write(f"Total pages: {len(st.session_state.pages)}")
-        if st.checkbox("Select all pages", key="select_all"):
-            st.session_state.selected_pages = list(range(len(st.session_state.pages)))
-        else:
-            # Only clear if it was previously all selected
-            if len(st.session_state.selected_pages) == len(st.session_state.pages):
-                st.session_state.selected_pages = []
-
-    with col1:
-        # Create a grid layout for page selection
-        cols = st.columns(4)
-        for idx, page in enumerate(st.session_state.pages):
-            with cols[idx % 4]:
-                st.image(page, caption=f"Page {idx + 1}", use_column_width=True)
-                if st.checkbox(
-                    f"Include page {idx + 1}",
-                    value=idx in st.session_state.selected_pages,
-                    key=f"page_{idx}",
-                    on_change=lambda i=idx: toggle_page(i),
-                ):
-                    if idx not in st.session_state.selected_pages:
-                        st.session_state.selected_pages.append(idx)
-                else:
-                    if idx in st.session_state.selected_pages:
-                        st.session_state.selected_pages.remove(idx)
-
-    n_selected = len(st.session_state.selected_pages)
-    st.write(f"Selected pages: {n_selected}")
+    n_selected = page_selector()
 
     # Show schema section
     st.write("## Schema Definition")
