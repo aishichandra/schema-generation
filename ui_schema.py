@@ -1,14 +1,13 @@
 import json
 
 import streamlit as st
-from streamlit_ace import st_ace
 
 from components.files import file_uploader, page_selector
 from components.schema_flow import (
     extract_data_with_schema,
-    generate_schema,
     get_schema_class,
 )
+from components.schemas import schema_interface
 from components.state import initialize_state
 
 WELCOME_MESSAGE = """
@@ -46,32 +45,7 @@ if st.session_state.pages is not None:
     n_selected = page_selector()
 
     # Show schema section
-    st.write("## Schema Definition")
-    st.write(
-        "You can either edit the schema directly or generate one from selected pages."
-    )
-
-    # Generate schema first
-    if n_selected > 0 and st.button("Generate Schema", key="generate_schema_button"):
-        selected_pages = [
-            st.session_state.pages[i] for i in st.session_state.selected_pages
-        ]
-        schema = generate_schema(selected_pages)
-        st.session_state.schema = schema
-        # Force a rerun to update the ace editor
-        st.rerun()
-
-    # Then show the editor with the current schema
-    edited_schema = st_ace(
-        value=st.session_state.schema,
-        language="python",
-        key="schema_editor",
-        height=300,
-        theme="monokai",
-    )
-
-    if edited_schema != st.session_state.schema:
-        st.session_state.schema = edited_schema
+    schema_interface(n_selected)
 
     # Extract data button
     if st.button("Extract Data", key="extract_data_button", disabled=n_selected == 0):
