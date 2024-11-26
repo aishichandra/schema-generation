@@ -63,6 +63,10 @@ def schema_interface_interactive():
     # Convert fields to Pydantic code
     st.session_state.schema = fields_to_pydantic(st.session_state.schema_fields)
 
+    # Show the generated schema ONLY FOR DEBUGGING
+    st.write("### Generated Schema")
+    st.code(st.session_state.schema, language="python")
+
 
 def schema_interface_code(n_selected):
     # Generate schema first

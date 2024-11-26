@@ -69,7 +69,6 @@ def file_uploader():
             pages = pages[:10]
 
         st.session_state.pages = pages
-        st.session_state.schema = None  # Reset schema
         st.session_state.extracted_data = None  # Reset extracted data
 
 
