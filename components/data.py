@@ -6,7 +6,11 @@ from components.schema_flow import extract_data_with_schema, get_schema_class
 
 
 def extract_data(n_selected):
-    if st.button("Extract Data", key="extract_data_button", disabled=n_selected == 0):
+    if st.button(
+        "Extract Data",
+        key="extract_data_button",
+        disabled=n_selected == 0 or "selected_workflow" not in st.session_state,
+    ):
         schema_code = st.session_state.schema
         if schema_code is not None:
             schema_class, _ = get_schema_class(schema_code)
