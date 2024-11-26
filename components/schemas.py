@@ -95,11 +95,18 @@ def schema_interface(n_selected):
     if "schema_fields" not in st.session_state:
         st.session_state.schema_fields = []
 
-    workflow = st.segmented_control(
-        "Schema Building Approach", ["Interface", "Code"], default="Interface"
-    )
+    # Initialize workflow selection state
+    if "selected_workflow" not in st.session_state:
+        workflow = st.segmented_control(
+            "Schema Building Approach", ["Interface", "Code"]
+        )
+        if workflow:  # Only set if user has made a selection
+            st.session_state.selected_workflow = workflow
+            st.rerun()
+    else:
+        workflow = st.session_state.selected_workflow
 
     if workflow == "Interface":
         schema_interface_interactive()
-    else:
+    elif workflow == "Code":
         schema_interface_code(n_selected)
