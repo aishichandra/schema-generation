@@ -91,7 +91,7 @@ def page_selector():
         cols = st.columns(4)
         for idx, page in enumerate(st.session_state.pages):
             with cols[idx % 4]:
-                st.image(page, caption=f"Page {idx + 1}", use_column_width=True)
+                st.image(page, caption=f"Page {idx + 1}", use_container_width=True)
                 if st.checkbox(
                     f"Include page {idx + 1}",
                     value=idx in st.session_state.selected_pages,

@@ -5,6 +5,7 @@ import streamlit as st
 from streamlit_ace import st_ace
 
 from components.schema_flow import generate_schema
+from components.state import PLACEHOLDER_SCHEMA
 
 
 @dataclass
@@ -14,7 +15,7 @@ class SchemaField:
     is_repeated: bool = False
 
 
-ALLOWED_TYPES = ["str", "int", "float", "bool", "datetime"]
+ALLOWED_TYPES = ["str", "int", "float", "bool"]
 
 
 def fields_to_pydantic(
@@ -25,12 +26,15 @@ def fields_to_pydantic(
         "from typing import List, Optional\n",
         f"class {class_name}(BaseModel):",
     ]
-    for field in fields:
-        type_str = field.type
-        if field.is_repeated:
-            type_str = f"List[{type_str}]"
-        lines.append(f"    {field.name}: {type_str}")
-    return "\n".join(lines)
+    if not fields:
+        return PLACEHOLDER_SCHEMA
+    else:
+        for field in fields:
+            type_str = field.type
+            if field.is_repeated:
+                type_str = f"List[{type_str}]"
+            lines.append(f"    {field.name}: {type_str}")
+        return "\n".join(lines)
 
 
 def schema_interface_interactive():
@@ -91,7 +95,9 @@ def schema_interface(n_selected):
     if "schema_fields" not in st.session_state:
         st.session_state.schema_fields = []
 
-    workflow = st.segmented_control("Schema Building Approach", ["Interface", "Code"])
+    workflow = st.segmented_control(
+        "Schema Building Approach", ["Interface", "Code"], default="Interface"
+    )
 
     if workflow == "Interface":
         schema_interface_interactive()
