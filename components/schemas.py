@@ -22,8 +22,7 @@ def fields_to_pydantic(
 ) -> str:
     lines = [
         "from pydantic import BaseModel",
-        "from typing import List, Optional",
-        "from datetime import datetime\n",
+        "from typing import List, Optional\n",
         f"class {class_name}(BaseModel):",
     ]
     for field in fields:
@@ -34,21 +33,55 @@ def fields_to_pydantic(
     return "\n".join(lines)
 
 
-def pydantic_to_fields(code: str) -> List[SchemaField]:
-    fields = []
-    lines = code.split("\n")
-    for line in lines:
-        if ":" in line and "class" not in line:
-            name, type_def = line.strip().split(":", 1)
-            name = name.strip()
-            type_def = type_def.strip()
-            is_repeated = "List[" in type_def
-            if is_repeated:
-                type_def = type_def[5:-1]  # Remove List[] wrapper
-            fields.append(
-                SchemaField(name=name, type=type_def, is_repeated=is_repeated)
+def schema_interface_interactive():
+    st.write("### Fields")
+    # Add new field
+    with st.container():
+        new_name = st.text_input("Field name", key="new_field_name")
+        new_type = st.selectbox("Field type", ALLOWED_TYPES, key="new_field_type")
+        new_repeated = st.checkbox("Is repeated?", key="new_field_repeated")
+
+        if st.button("Add Field"):
+            st.session_state.schema_fields.append(
+                SchemaField(name=new_name, type=new_type, is_repeated=new_repeated)
             )
-    return fields
+
+    # List existing fields
+    for i, field in enumerate(st.session_state.schema_fields):
+        with st.container():
+            st.write(
+                f"**{field.name}**: {field.type} {'(repeated)' if field.is_repeated else ''}"
+            )
+            if st.button("Remove", key=f"remove_{i}"):
+                st.session_state.schema_fields.pop(i)
+                st.rerun()
+
+    # Convert fields to Pydantic code
+    st.session_state.schema = fields_to_pydantic(st.session_state.schema_fields)
+
+
+def schema_interface_code(n_selected):
+    # Generate schema first
+    if n_selected > 0 and st.button("Generate Schema", key="generate_schema_button"):
+        selected_pages = [
+            st.session_state.pages[i] for i in st.session_state.selected_pages
+        ]
+        schema = generate_schema(selected_pages)
+        st.session_state.schema = schema
+        st.rerun()
+
+    # Show the editor with the current schema
+    edited_schema = st_ace(
+        value=st.session_state.schema,
+        language="python",
+        key="schema_editor",
+        height=300,
+        theme="monokai",
+    )
+
+    if edited_schema != st.session_state.schema:
+        st.session_state.schema = edited_schema
+        st.rerun()
 
 
 def schema_interface(n_selected):
@@ -58,55 +91,9 @@ def schema_interface(n_selected):
     if "schema_fields" not in st.session_state:
         st.session_state.schema_fields = []
 
-    col1, col2 = st.columns(2)
+    workflow = st.segmented_control("Schema Building Approach", ["Interface", "Code"])
 
-    with col1:
-        st.write("### Fields")
-        # Add new field
-        with st.container():
-            new_name = st.text_input("Field name", key="new_field_name")
-            new_type = st.selectbox("Field type", ALLOWED_TYPES, key="new_field_type")
-            new_repeated = st.checkbox("Is repeated?", key="new_field_repeated")
-
-            if st.button("Add Field"):
-                st.session_state.schema_fields.append(
-                    SchemaField(name=new_name, type=new_type, is_repeated=new_repeated)
-                )
-
-        # List existing fields
-        for i, field in enumerate(st.session_state.schema_fields):
-            with st.container():
-                st.write(
-                    f"**{field.name}**: {field.type} {'(repeated)' if field.is_repeated else ''}"
-                )
-                if st.button("Remove", key=f"remove_{i}"):
-                    st.session_state.schema_fields.pop(i)
-                    st.rerun()
-
-    with col2:
-        # Generate schema first
-        if n_selected > 0 and st.button(
-            "Generate Schema", key="generate_schema_button"
-        ):
-            selected_pages = [
-                st.session_state.pages[i] for i in st.session_state.selected_pages
-            ]
-            schema = generate_schema(selected_pages)
-            st.session_state.schema = schema
-            st.session_state.schema_fields = pydantic_to_fields(schema)
-            st.rerun()
-
-        # Show the editor with the current schema
-        current_schema = fields_to_pydantic(st.session_state.schema_fields)
-        edited_schema = st_ace(
-            value=current_schema,
-            language="python",
-            key="schema_editor",
-            height=300,
-            theme="monokai",
-        )
-
-        if edited_schema != current_schema:
-            st.session_state.schema = edited_schema
-            st.session_state.schema_fields = pydantic_to_fields(edited_schema)
-            st.rerun()
+    if workflow == "Interface":
+        schema_interface_interactive()
+    else:
+        schema_interface_code(n_selected)
