@@ -2,8 +2,9 @@ from dataclasses import dataclass
 from typing import List
 
 import streamlit as st
-from schema_flow import generate_schema
 from streamlit_ace import st_ace
+
+from components.schema_flow import generate_schema
 
 
 @dataclass

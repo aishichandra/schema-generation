@@ -1,7 +1,8 @@
 import json
 
 import streamlit as st
-from schema_flow import extract_data_with_schema, get_schema_class
+
+from components.schema_flow import extract_data_with_schema, get_schema_class
 
 
 def extract_data(n_selected):
