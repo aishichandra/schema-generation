@@ -40,7 +40,7 @@ if st.session_state.pages is not None:
     n_selected = page_selector()
 
     # Show schema section
-    schema_interface(n_selected)
+    schema_interface()
 
     # Extract data button
     extract_data(n_selected)

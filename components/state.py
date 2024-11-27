@@ -9,9 +9,10 @@ class Document(BaseModel):
     content: Optional[List[str]] = None
 '''
 
+
 def initialize_state():
     """Initialize session state variables"""
-        # uploaded file
+    # uploaded file
     if "uploaded_file" not in st.session_state:
         st.session_state.uploaded_file = None
     # page image objects
