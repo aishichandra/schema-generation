@@ -37,7 +37,12 @@ def schema_interface_interactive():
     st.write("### Fields")
     # Add new field
     with st.container():
-        new_name = st.text_input("Field name", key="new_field_name")
+        new_name = (
+            st.text_input("Field name", key="new_field_name")
+            .strip()
+            .lower()
+            .replace(" ", "_")
+        )
         new_type = st.selectbox("Field type", ALLOWED_TYPES, key="new_field_type")
         new_repeated = st.checkbox("Is repeated?", key="new_field_repeated")
 
