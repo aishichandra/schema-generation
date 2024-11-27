@@ -5,7 +5,6 @@ import streamlit as st
 from streamlit_ace import st_ace
 
 from components.schema_flow import generate_schema
-from components.state import PLACEHOLDER_SCHEMA
 
 
 @dataclass
@@ -26,15 +25,12 @@ def fields_to_pydantic(
         "from typing import List, Optional\n",
         f"class {class_name}(BaseModel):",
     ]
-    if not fields:
-        return PLACEHOLDER_SCHEMA
-    else:
-        for field in fields:
-            type_str = field.type
-            if field.is_repeated:
-                type_str = f"List[{type_str}]"
-            lines.append(f"    {field.name}: {type_str}")
-        return "\n".join(lines)
+    for field in fields:
+        type_str = field.type
+        if field.is_repeated:
+            type_str = f"List[{type_str}]"
+        lines.append(f"    {field.name}: {type_str}")
+    return "\n".join(lines)
 
 
 def schema_interface_interactive():
@@ -58,27 +54,12 @@ def schema_interface_interactive():
             )
             if st.button("Remove", key=f"remove_{i}"):
                 st.session_state.schema_fields.pop(i)
-                st.rerun()
 
     # Convert fields to Pydantic code
     st.session_state.schema = fields_to_pydantic(st.session_state.schema_fields)
 
-    # Show the generated schema ONLY FOR DEBUGGING
-    st.write("### Generated Schema")
-    st.code(st.session_state.schema, language="python")
 
-
-def schema_interface_code(n_selected):
-    # Generate schema first
-    if n_selected > 0 and st.button("Generate Schema", key="generate_schema_button"):
-        selected_pages = [
-            st.session_state.pages[i] for i in st.session_state.selected_pages
-        ]
-        schema = generate_schema(selected_pages)
-        st.session_state.schema = schema
-        st.rerun()
-
-    # Show the editor with the current schema
+def schema_interface_code():
     edited_schema = st_ace(
         value=st.session_state.schema,
         language="python",
@@ -87,12 +68,19 @@ def schema_interface_code(n_selected):
         theme="monokai",
     )
 
-    if edited_schema != st.session_state.schema:
-        st.session_state.schema = edited_schema
-        st.rerun()
+    st.session_state.schema = edited_schema
 
 
-def schema_interface(n_selected):
+def schema_interface_generate():
+    # Generate schema
+    with st.spinner("Generating schema..."):
+        selected_pages = [
+            st.session_state.pages[i] for i in st.session_state.selected_pages
+        ]
+        st.session_state.schema = generate_schema(selected_pages)
+
+
+def schema_interface():
     st.write("## Schema Definition")
 
     # Initialize session state for fields if not exists
@@ -102,7 +90,7 @@ def schema_interface(n_selected):
     # Initialize workflow selection state
     if "selected_workflow" not in st.session_state:
         workflow = st.segmented_control(
-            "Schema Building Approach", ["Interface", "Code"]
+            "Schema Building Approach", ["Interface", "Code", "Auto"]
         )
         if workflow:  # Only set if user has made a selection
             st.session_state.selected_workflow = workflow
@@ -113,4 +101,6 @@ def schema_interface(n_selected):
     if workflow == "Interface":
         schema_interface_interactive()
     elif workflow == "Code":
-        schema_interface_code(n_selected)
+        schema_interface_code()
+    elif workflow == "Auto":
+        schema_interface_generate()
