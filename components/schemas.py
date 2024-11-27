@@ -88,7 +88,13 @@ def schema_interface_generate():
 
 
 def schema_interface():
-    st.write("## Schema Definition")
+    st.write("## Data Schema Builder")
+    st.write("""
+    Define the structure of your data schema using one of three approaches:
+    - **Interface**: Build your schema by adding fields through a user-friendly form
+    - **Code**: Write or edit your Pydantic schema directly in code
+    - **Auto**: Automatically generate a schema from selected pages
+    """)
 
     # Initialize session state for fields if not exists
     if "schema_fields" not in st.session_state:

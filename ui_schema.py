@@ -10,9 +10,10 @@ This app uses AI to help you extract structured data from documents. Here's how 
 
 1. **Upload a document** - Supports PDF files (max 10 pages)
 2. **Select pages** - Choose which pages you want to process
-3. **Define your schema** - You have two options:
-   - Edit the default schema directly in the code editor
-   - Click 'Generate Schema' to automatically create one based on your selected pages
+3. **Define your schema** - You have three options:
+   - **Interface**: Build your schema using a user-friendly form
+   - **Code**: Write or edit your Pydantic schema directly
+   - **Auto**: Automatically generate a schema from selected pages
 4. **Extract data** - The app will process your document according to the schema
 5. **Download results** - Get your structured data as a JSON file
 
