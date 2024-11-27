@@ -42,10 +42,6 @@ if st.session_state.pages is not None:
     # Show schema section
     schema_interface()
 
-    # SCHEMA DEBUGGING
-    st.write("### Debugging")
-    st.code(st.session_state.schema, language="python")
-
     # Extract data button
     extract_data(n_selected)
 

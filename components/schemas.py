@@ -78,11 +78,13 @@ def schema_interface_code():
 
 def schema_interface_generate():
     # Generate schema
-    with st.spinner("Generating schema..."):
-        selected_pages = [
-            st.session_state.pages[i] for i in st.session_state.selected_pages
-        ]
-        st.session_state.schema = generate_schema(selected_pages)
+    if "schema_generated" not in st.session_state:
+        with st.spinner("Generating schema..."):
+            selected_pages = [
+                st.session_state.pages[i] for i in st.session_state.selected_pages
+            ]
+            st.session_state.schema = generate_schema(selected_pages)
+            st.session_state.schema_generated = True
 
 
 def schema_interface():
@@ -109,3 +111,5 @@ def schema_interface():
         schema_interface_code()
     elif workflow == "Auto":
         schema_interface_generate()
+        st.write("### Generated Schema")
+        st.code(st.session_state.schema, language="python")
