@@ -19,7 +19,7 @@ This app uses AI to help you extract structured data from documents. Here's how 
 
 The schema defines what data to extract and how to structure it. It uses Python's Pydantic library for data validation.
 
-📚 Want to learn more? Check out the [detailed blog post](https://your-blog-post-url.com) about the technology behind this app.
+📚 Want to learn more? Check out the [detailed blog post](https://medium.com/p/c3b6b2baed36) about the technology behind this app.
 """
 
 # Initialize session state variables
